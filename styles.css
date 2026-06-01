@@ -1,0 +1,72 @@
+/* Page Background */
+body{
+    background-color: lightgray;
+    font-family: Arial;
+}
+
+/* Welcome Banner */
+#welcome{
+    background-color: blue;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+
+/* Event Cards */
+.eventCard{
+    border: 2px solid black;
+    padding: 10px;
+    margin: 10px;
+}
+
+/* All h2 Headings */
+h2{
+    color: darkblue;
+}
+
+/* Paragraphs */
+p{
+    color: black;
+}
+
+/* Navigation Links */
+a{
+    text-decoration: none;
+    color: blue;
+}
+
+a:hover{
+    color: red;
+}
+
+/* Images */
+img{
+    width: 150px;
+    border: 2px solid black;
+}
+
+/* Table */
+table,td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 10px;
+}
+
+/* Form */
+input,select,textarea{
+    padding: 5px;
+    margin: 5px;
+}
+
+/* Mobile Screen */
+@media(max-width:768px){
+
+    img{
+        width: 100px;
+    }
+
+    body{
+        font-size: 14px;
+    }
+
+}
