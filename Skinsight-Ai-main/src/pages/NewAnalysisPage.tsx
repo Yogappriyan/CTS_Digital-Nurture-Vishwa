@@ -172,20 +172,23 @@ export const NewAnalysisPage: React.FC<NewAnalysisPageProps> = ({
               
               <ol className="list-decimal list-inside space-y-2 text-xs leading-relaxed">
                 <li>
-                  <strong>Add Environment Variable:</strong> In your <strong>Vercel Project Dashboard</strong> &rarr; <strong>Settings</strong> &rarr; <strong>Environment Variables</strong>:
+                  <strong>Add Environment Variable in Vercel:</strong> In your <strong>Vercel Project Dashboard</strong> &rarr; <strong>Settings</strong> &rarr; <strong>Environment Variables</strong>:
                   <div className="mt-1 pl-4 font-mono text-[11px] bg-slate-100 dark:bg-slate-800 p-2 rounded border border-slate-200 dark:border-slate-700 select-all">
                     Key: GEMINI_API_KEY<br />
-                    Value: your_gemini_api_key_here
+                    Value: [Paste your secret key here in Vercel Dashboard, NOT in code]
                   </div>
                   <span className="text-[11px] text-amber-700 dark:text-amber-400">
-                    Important: Paste your actual Gemini API key without quotes in the Vercel dashboard.
+                    ⚠️ <strong>Never paste your secret key directly into .tsx source files</strong> — GitHub Push Protection will immediately block your git push (Error GH013).
                   </span>
                 </li>
                 <li>
-                  <strong>Serverless Functions Included:</strong> We have added native Vercel serverless functions in <code className="font-mono text-teal-600">/api/analyze-skin.ts</code> and <code className="font-mono text-teal-600">/api/health.ts</code> along with <code className="font-mono">vercel.json</code>.
+                  <strong>For Local Development:</strong> Put <code className="font-mono text-teal-600">GEMINI_API_KEY="..."</code> inside your local <code className="font-mono text-teal-600">.env</code> file (which is git-ignored and safe).
                 </li>
                 <li>
-                  <strong>Trigger Redeploy:</strong> Push these changes to GitHub and trigger a <strong>Redeploy</strong> in Vercel to activate the serverless functions.
+                  <strong>Serverless API Routes Ready:</strong> Native Vercel functions are in <code className="font-mono text-teal-600">/api/analyze-skin.ts</code> and <code className="font-mono text-teal-600">/api/health.ts</code>.
+                </li>
+                <li>
+                  <strong>Trigger Redeploy:</strong> In Vercel &rarr; Deployments &rarr; click <strong>Redeploy</strong> to apply the environment variable.
                 </li>
               </ol>
 
