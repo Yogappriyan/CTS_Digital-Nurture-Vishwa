@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "user": {
+      "title": "User Profile",
+      "description": "Registered user profile with role-based access control",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "createdAt": { "type": "string" },
+        "lastLoginAt": { "type": "string" }
+      },
+      "required": ["id", "email", "role"]
+    },
+    "analysis": {
+      "title": "Skin Analysis Record",
+      "description": "Record of dermatological AI screening and diagnosis",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "predictedCondition": { "type": "string" },
+        "confidence": { "type": "number" },
+        "riskLevel": { "type": "string" },
+        "fullAnalysisJson": { "type": "string" }
+      },
+      "required": ["id", "userId", "createdAt", "predictedCondition", "confidence"]
+    },
+    "modelTrainingLog": {
+      "title": "Model Training Log",
+      "description": "Audit record of model training and evaluation runs by administrators",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "datasetKey": { "type": "string" },
+        "epochs": { "type": "number" },
+        "batchSize": { "type": "number" },
+        "accuracy": { "type": "number" },
+        "loss": { "type": "number" },
+        "trainedBy": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "datasetKey", "epochs", "accuracy", "trainedBy"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "user",
+      "description": "User profile documents keyed by Firebase Auth UID"
+    },
+    "/analyses/{analysisId}": {
+      "schema": "analysis",
+      "description": "User skin screening records"
+    },
+    "/trainingLogs/{logId}": {
+      "schema": "modelTrainingLog",
+      "description": "Model training & evaluation records accessible to admins"
+    }
+  }
+}
