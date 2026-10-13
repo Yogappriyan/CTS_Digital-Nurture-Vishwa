@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { SupportedDatasetKey } from '../types';
 import { SUPPORTED_DATASETS } from '../services/dermatologyPipelineEngine';
+import { CustomModelTrainingStudio } from '../components/training/CustomModelTrainingStudio';
 
 interface TrainingConfig {
   datasetKey: SupportedDatasetKey;
@@ -115,7 +116,7 @@ const TEST_BENCHMARK_CASES = [
 ];
 
 export const TrainEvaluatePage: React.FC<{ onNavigateToScreening: () => void }> = ({ onNavigateToScreening }) => {
-  const [activeTab, setActiveTab] = useState<'training' | 'evaluation' | 'benchmark'>('training');
+  const [activeTab, setActiveTab] = useState<'custom-training' | 'training' | 'evaluation' | 'benchmark'>('custom-training');
 
   // Training parameters
   const [config, setConfig] = useState<TrainingConfig>({
@@ -207,7 +208,7 @@ export const TrainEvaluatePage: React.FC<{ onNavigateToScreening: () => void }> 
       `🚀 Initializing Training Pipeline for ${SUPPORTED_DATASETS[config.datasetKey].name}...`,
       `📦 Backbone Architecture: ${config.architecture}`,
       `⚙️ Optimizer: ${config.optimizer} | Base LR: ${config.learningRate} | Loss: ${config.lossFunction}`,
-      `🧹 Preprocessing: DullRazor artifact suppression: ${config.dullRazorPreprocessing ? 'ENABLED' : 'DISABLED'} | Data Augmentation: ${config.augmentation ? 'ENABLED' : 'DISABLED'}`,
+      `🧹 Preprocessing: Morphological artifact suppression: ${config.dullRazorPreprocessing ? 'ENABLED' : 'DISABLED'} | Data Augmentation: ${config.augmentation ? 'ENABLED' : 'DISABLED'}`,
       `📊 Splitting Dataset: 80% Train (8,012 images), 10% Validation (1,001 images), 10% Test (1,002 images)`,
       `🧠 Loading pre-trained ImageNet weights & initializing depthwise separable bottleneck layers...`,
       `-----------------------------------------------------------------------------------------`
@@ -248,7 +249,7 @@ export const TrainEvaluatePage: React.FC<{ onNavigateToScreening: () => void }> 
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 space-y-5 overflow-x-hidden">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
         <div>
@@ -282,17 +283,32 @@ export const TrainEvaluatePage: React.FC<{ onNavigateToScreening: () => void }> 
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
+        <button
+          onClick={() => setActiveTab('custom-training')}
+          className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2 shrink-0 transition-all cursor-pointer ${
+            activeTab === 'custom-training'
+              ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-teal-500" />
+          <span>1. Custom Image Training & Gemini (5–10 Images)</span>
+          <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200 font-extrabold">
+            Featured
+          </span>
+        </button>
+
         <button
           onClick={() => setActiveTab('training')}
-          className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2 transition-all ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2 shrink-0 transition-all cursor-pointer ${
             activeTab === 'training'
               ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
               : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Cpu className="w-4 h-4" />
-          <span>1. Model Training & Epochs</span>
+          <span>2. Benchmark Dataset Training & Epochs</span>
           {isTraining && (
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           )}
@@ -300,30 +316,35 @@ export const TrainEvaluatePage: React.FC<{ onNavigateToScreening: () => void }> 
 
         <button
           onClick={() => setActiveTab('evaluation')}
-          className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2 transition-all ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2 shrink-0 transition-all cursor-pointer ${
             activeTab === 'evaluation'
               ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
               : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <BarChart3 className="w-4 h-4" />
-          <span>2. Model Evaluation & ROC Metrics</span>
+          <span>3. Model Evaluation & ROC Metrics</span>
         </button>
 
         <button
           onClick={() => setActiveTab('benchmark')}
-          className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2 transition-all ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-2 shrink-0 transition-all cursor-pointer ${
             activeTab === 'benchmark'
               ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
               : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Target className="w-4 h-4" />
-          <span>3. Live Validation Inference</span>
+          <span>4. Live Validation Inference</span>
         </button>
       </div>
 
-      {/* TAB 1: MODEL TRAINING STUDIO */}
+      {/* TAB 1: CUSTOM MULTI-IMAGE TRAINING & GEMINI API STUDIO */}
+      {activeTab === 'custom-training' && (
+        <CustomModelTrainingStudio onNavigateToScreening={onNavigateToScreening} />
+      )}
+
+      {/* TAB 2: GLOBAL DATASET TRAINING STUDIO */}
       {activeTab === 'training' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column: Hyperparameters & Setup */}
@@ -364,9 +385,9 @@ export const TrainEvaluatePage: React.FC<{ onNavigateToScreening: () => void }> 
                 onChange={(e) => setConfig({ ...config, architecture: e.target.value as any })}
                 className="w-full text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-teal-500"
               >
-                <option value="YOLO_XCEPTION_HYBRID">YOLOv8 Localization + XceptionNet Classifier (Recommended)</option>
-                <option value="MOBILENET_PCA_LSTM">MobileNetV2 + PCA Dimensionality Reduction + BiLSTM</option>
-                <option value="EFFICIENTNET_B0">EfficientNet-B0 Deep Residual Backbone</option>
+                <option value="YOLO_XCEPTION_HYBRID">High-Resolution Lesion Detector & Classifier (Recommended)</option>
+                <option value="MOBILENET_PCA_LSTM">Sequential Radial Feature Model</option>
+                <option value="EFFICIENTNET_B0">Deep Residual Convolutional Backbone</option>
               </select>
             </div>
 
@@ -442,7 +463,7 @@ export const TrainEvaluatePage: React.FC<{ onNavigateToScreening: () => void }> 
             {/* Pipeline Toggles */}
             <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               <label className="flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
-                <span>DullRazor Hair Suppression</span>
+                <span>Morphological Artifact & Hair Suppression</span>
                 <input
                   type="checkbox"
                   disabled={isTraining}
@@ -515,7 +536,7 @@ export const TrainEvaluatePage: React.FC<{ onNavigateToScreening: () => void }> 
                       {isTraining ? `Training Active (Epoch ${currentEpoch}/${config.epochs})` : trainingCompleted ? 'Training Successfully Completed' : 'Awaiting Training Start'}
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {isTraining ? 'Backpropagating gradients across XceptionNet separable blocks...' : trainingCompleted ? 'Model weights ready for evaluation and screening inference.' : 'Click Start Training Run to begin gradient optimization.'}
+                      {isTraining ? 'Backpropagating gradients across deep neural network layers...' : trainingCompleted ? 'Model weights ready for evaluation and screening inference.' : 'Click Start Training Run to begin gradient optimization.'}
                     </p>
                   </div>
                 </div>

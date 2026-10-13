@@ -46,7 +46,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   const [bio, setBio] = useState('Board-certified clinical specialist focusing on non-invasive dermoscopic image analysis, early melanoma identification, and AI-assisted triage workflows.');
   
   // Preferences
-  const [architecture, setArchitecture] = useState(user.preferences.modelArchitecture || 'MobileNetV2 + PCA + XceptionNet');
+  const [architecture, setArchitecture] = useState(user.preferences.modelArchitecture || 'Multimodal Deep Neural Network');
   const [colormap, setColormap] = useState(user.preferences.gradcamColormap || 'jet');
   const [emailAlerts, setEmailAlerts] = useState(user.preferences.emailAlerts ?? true);
   const [highRiskAlerts, setHighRiskAlerts] = useState(user.preferences.highRiskAlerts ?? true);
@@ -464,9 +464,9 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                   onChange={(e) => setArchitecture(e.target.value as any)}
                   className="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-slate-900 dark:text-slate-100"
                 >
-                  <option value="MobileNetV2 + PCA + XceptionNet">MobileNetV2 + PCA + XceptionNet (Recommended)</option>
-                  <option value="EfficientNet-B0">EfficientNet-B0 (ISIC High-Sensitivity)</option>
-                  <option value="ResNet50-Derm">ResNet-50 Dermoscopic Ensemble</option>
+                  <option value="Multimodal Deep Neural Network">Multimodal Deep Neural Network (Recommended)</option>
+                  <option value="High-Sensitivity CNN">High-Sensitivity Convolutional Network</option>
+                  <option value="Standard Ensemble">Standard Dermoscopic Ensemble</option>
                 </select>
               </div>
 

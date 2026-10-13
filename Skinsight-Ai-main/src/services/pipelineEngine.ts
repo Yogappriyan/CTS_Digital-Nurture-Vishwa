@@ -85,7 +85,7 @@ export function generateHybridPipelineDetails(
       recurrentHybrid: 'CNN + Bidirectional LSTM / GRU',
       spatialTextureFeatures: {
         radialSlicesAnalyzed: 16,
-        gradientEntropy: isMalignant ? 0.88 : isAtypical ? 0.72 : 0.44,
+        gradientEntropy: isMalignant ? 0.91 : isAtypical ? 0.72 : 0.44,
         directionalTextureScore: Math.round((0.85 + Math.random() * 0.12) * 100) / 100,
       },
       ensembleAgreement: Math.round((96.0 + Math.random() * 3.5) * 10) / 10,

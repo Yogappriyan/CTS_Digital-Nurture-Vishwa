@@ -91,7 +91,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       joinedDate: 'September 2026',
       preferences: {
         theme: 'system',
-        modelArchitecture: 'MobileNetV2 + PCA + XceptionNet',
+        modelArchitecture: 'Multimodal Deep Neural Network',
         gradcamColormap: 'jet',
         emailAlerts: true,
         highRiskAlerts: true,

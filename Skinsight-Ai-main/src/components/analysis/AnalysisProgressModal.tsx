@@ -8,11 +8,11 @@ interface AnalysisProgressModalProps {
 
 const STEPS = [
   { id: 1, name: 'Image Validation', desc: 'Resolution, focus & lighting validation' },
-  { id: 2, name: 'Preprocessing', desc: 'RGB normalization & 224×224 tensor transformation' },
-  { id: 3, name: 'Feature Extraction', desc: 'EfficientNet deep convolutional feature maps' },
-  { id: 4, name: 'Classification', desc: 'Softmax probability evaluation across 7 ISIC categories' },
-  { id: 5, name: 'Explainability Map', desc: 'Grad-CAM gradient backpropagation & heat localization' },
-  { id: 6, name: 'Clinical Synthesis', desc: 'Formatting screening metrics & guidance summary' }
+  { id: 2, name: 'Preprocessing', desc: 'Color normalization & resolution standardization' },
+  { id: 3, name: 'Feature Extraction', desc: 'Deep convolutional feature extraction' },
+  { id: 4, name: 'Classification', desc: 'Differential probability evaluation across categories' },
+  { id: 5, name: 'Explainability Map', desc: 'Grad-CAM visual attention mapping' },
+  { id: 6, name: 'Clinical Synthesis', desc: 'Formatting screening report & guidance summary' }
 ];
 
 export const AnalysisProgressModal: React.FC<AnalysisProgressModalProps> = ({ currentStep, stepMessage }) => {
@@ -28,8 +28,8 @@ export const AnalysisProgressModal: React.FC<AnalysisProgressModalProps> = ({ cu
             <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
               Analyzing Skin Lesion...
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-              EfficientNet-B0 Inference Engine
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              AI Dermatological Screening Engine
             </p>
           </div>
         </div>

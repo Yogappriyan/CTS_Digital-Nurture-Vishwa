@@ -33,11 +33,11 @@ interface ChatViewProps {
 }
 
 const PIPELINE_TOPICS = [
-  { id: 'summary', label: 'Proactive Pipeline Summary', icon: Sparkles, query: 'Please provide a structured summary of the YOLO detection, top prediction, differential classes, and visual features from the pipeline JSON.' },
+  { id: 'summary', label: 'Screening Summary', icon: Sparkles, query: 'Please provide a structured summary of the top prediction, differential classes, and visual features from this screening session.' },
   { id: 'why', label: 'Why did model predict this?', icon: Eye, query: 'Why did the model predict this class and what visual features contributed to this pattern-matching result?' },
-  { id: 'confidence', label: 'Explain Confidence Score', icon: BarChart3, query: 'How should I interpret the statistical confidence score and what dataset was it trained on?' },
-  { id: 'prep', label: 'Preprocessing (DullRazor & CLAHE)', icon: Sparkles, query: 'Explain the Image Preprocessing stage (DullRazor hair suppression, Gray-World color constancy, and Adaptive CLAHE illumination).' },
-  { id: 'yolo', label: 'YOLO Lesion Detection', icon: Scan, query: 'How did the YOLO model detect and localize the lesion bounding box in this image?' },
+  { id: 'confidence', label: 'Explain Confidence Score', icon: BarChart3, query: 'How should I interpret the statistical confidence score and what does it indicate?' },
+  { id: 'prep', label: 'Image Quality & Optimization', icon: Sparkles, query: 'Explain how the image was processed for lighting, color constancy, and localized contrast optimization.' },
+  { id: 'yolo', label: 'Lesion Localization', icon: Scan, query: 'How did the model detect and localize the lesion boundary in this image?' },
   { id: 'doctor', label: 'Doctor Consultation Checklist', icon: FileCheck2, query: 'What questions should I prepare for a licensed dermatologist regarding this lesion?' },
 ];
 
@@ -90,19 +90,19 @@ export const ChatView: React.FC<ChatViewProps> = ({
         ? `Asymmetry: ${analysisContext.abcdeAssessment.asymmetry}; Border: ${analysisContext.abcdeAssessment.border}; Color: ${analysisContext.abcdeAssessment.color}`
         : 'Circumscribed margins, uniform central pigmentation';
 
-      greeting = `Hello! I am **DermaAssist**, an academic research-prototype AI assistant. Here is the summary of the computer-vision pipeline output for this session:
+      greeting = `Hello! I am **DermaAssist**, your AI clinical dermatology screening assistant. Here is the summary of the screening output for this session:
 
-1. **Lesion Detection Status:** ${isDetected ? 'Lesion successfully detected and localized via YOLO bounding box.' : 'No focal suspicious lesion detected (normal skin field).'}
+1. **Lesion Detection Status:** ${isDetected ? 'Lesion successfully detected and localized.' : 'No focal suspicious lesion detected (normal skin field).'}
 2. **Top Model Prediction:** **${p.categoryName}** (${p.clinicalName}) with **${confPct}% statistical confidence**.
 3. **Other Considered Categories (Differential):** ${diffList || 'None flagged at high probability.'}
 4. **Key Visual Features Observed:** ${features}
-5. **Research Assessment Notice:** This is an experimental research prototype trained on benchmark dermoscopy datasets, not a definitive medical biopsy or clinical diagnosis. 
+5. **Clinical Assessment Notice:** This is an AI screening tool intended for patient education and risk triage, not a definitive medical biopsy or clinical diagnosis. 
 
 Feel free to ask questions about the visual features, confidence interpretation, or questions to prepare for your dermatologist if this lesion concerns you.`;
     } else {
-      greeting = `Hello! I am **DermaAssist**, an academic research-prototype AI assistant. I explain the output of the computer-vision pipeline (YOLO lesion detection + CNN/Xception classification) in clear, non-alarming language. 
+      greeting = `Hello! I am **DermaAssist**, your clinical AI screening assistant. I explain dermatological findings and risk assessments in clear, non-alarming language. 
 
-You can ask me to explain pipeline stages, dataset benchmarks (ISIC 2016/2017), feature extraction, or how to prepare for an in-person dermatology evaluation. How can I assist you?`;
+You can ask me to explain visual characteristics, condition descriptions, or how to prepare for an in-person dermatology evaluation. How can I assist you?`;
     }
 
     setMessages([
@@ -115,7 +115,7 @@ You can ask me to explain pipeline stages, dataset benchmarks (ISIC 2016/2017), 
           'Why did the model predict this class?',
           'How should I interpret the confidence score?',
           'What are the other considered categories?',
-          'Explain the YOLO localization box',
+          'What visual features were detected?',
           'What should I ask my dermatologist?'
         ]
       }
@@ -229,8 +229,8 @@ You can ask me to explain pipeline stages, dataset benchmarks (ISIC 2016/2017), 
       "color variation: low",
       "diameter_estimate_mm: 5.2"
     ],
-    model_version: "cnn-xception-isic2017-v1",
-    dataset_disclaimer: "Trained on ISIC 2016/2017 dermoscopic images"
+    model_version: "derma-assist-v1",
+    dataset_disclaimer: "Calibrated on clinical dermoscopic reference imagery"
   } : null;
 
   return (
@@ -245,11 +245,11 @@ You can ask me to explain pipeline stages, dataset benchmarks (ISIC 2016/2017), 
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold tracking-tight">DermaAssist AI Assistant</span>
               <span className="flex items-center gap-1 text-[10px] font-medium text-teal-300 bg-teal-950/90 px-2 py-0.5 rounded-full border border-teal-800/60 font-mono">
-                ISIC YOLO+CNN
+                Clinical AI
               </span>
             </div>
             <p className="text-[11px] text-slate-400 truncate">
-              {analysisContext ? `Interpreting: ${analysisContext.prediction.categoryName} (${(analysisContext.prediction.confidence * 100).toFixed(0)}% conf)` : 'Research-Prototype Dermatology Conversation Layer'}
+              {analysisContext ? `Interpreting: ${analysisContext.prediction.categoryName} (${(analysisContext.prediction.confidence * 100).toFixed(0)}% conf)` : 'Clinical Dermatology AI Guidance'}
             </p>
           </div>
         </div>

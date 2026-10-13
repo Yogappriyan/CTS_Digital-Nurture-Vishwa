@@ -76,14 +76,14 @@ export const ClinicalReportView: React.FC<ClinicalReportViewProps> = ({
               </span>
             </div>
             <p className="text-xs text-slate-600">
-              End-to-End Hybrid Computer Vision & Explainable AI (XAI) Report
+              Dermatological Clinical Screening & Differential Analysis Report
             </p>
           </div>
 
           <div className="text-left sm:text-right text-xs space-y-0.5 text-slate-600 font-mono">
             <p><strong>Report ID:</strong> {analysis.id}</p>
             <p><strong>Date:</strong> {new Date(analysis.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
-            <p><strong>Framework:</strong> MobileNetV2 + PCA + YOLOv4 + XceptionNet</p>
+            <p><strong>Analysis Type:</strong> Dermatological AI Screening</p>
           </div>
         </div>
 
@@ -140,53 +140,6 @@ export const ClinicalReportView: React.FC<ClinicalReportViewProps> = ({
           </p>
         </div>
 
-        {/* Hybrid Pipeline Technical Verification */}
-        {pipelineDetails && (
-          <div className="space-y-2.5 p-3.5 rounded-xl border border-slate-200 bg-slate-50/40 text-xs">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-              <Cpu className="w-3.5 h-3.5 text-teal-700" />
-              Hybrid Computer Vision Pipeline Specifications
-            </h3>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-[11px]">
-              <div className="p-2 rounded bg-white border border-slate-200">
-                <span className="text-slate-400 block text-[9px] uppercase font-bold">1. Preprocessing</span>
-                <p className="font-semibold text-slate-800">DullRazor & CLAHE</p>
-                <p className="text-slate-500 text-[10px]">{pipelineDetails.preprocessing.artifactSuppression.hairsDetected} hairs suppressed, {pipelineDetails.preprocessing.illuminationCorrection.contrastGain}</p>
-              </div>
-
-              <div className="p-2 rounded bg-white border border-slate-200">
-                <span className="text-slate-400 block text-[9px] uppercase font-bold">2. MobileNetV2 + PCA</span>
-                <p className="font-semibold text-slate-800">64-D PCA Features</p>
-                <p className="text-slate-500 text-[10px]">{pipelineDetails.featureExtraction.pcaFeatureSelection.varianceRetained}% variance retained (1280-D vector)</p>
-              </div>
-
-              <div className="p-2 rounded bg-white border border-slate-200">
-                <span className="text-slate-400 block text-[9px] uppercase font-bold">3. YOLOv4 Localization</span>
-                <p className="font-semibold text-slate-800">ROI Detected ({(pipelineDetails.localization.detectionConfidence * 100).toFixed(1)}%)</p>
-                <p className="text-slate-500 text-[10px]">Area: {pipelineDetails.localization.estimatedAreaMm2} mm² • Margin: {pipelineDetails.localization.boundaryMarginScore}</p>
-              </div>
-
-              <div className="p-2 rounded bg-white border border-slate-200">
-                <span className="text-slate-400 block text-[9px] uppercase font-bold">4. XceptionNet + CNN+LSTM</span>
-                <p className="font-semibold text-slate-800">Sequential Spatial Modeling</p>
-                <p className="text-slate-500 text-[10px]">{pipelineDetails.classificationEngine.ensembleAgreement}% agreement • 16 radial slices</p>
-              </div>
-            </div>
-
-            {/* Benchmark row */}
-            <div className="pt-2 border-t border-slate-200 flex flex-wrap items-center justify-between text-[10px] font-mono text-slate-600 gap-2">
-              <span><strong>Benchmarked Metrics:</strong></span>
-              <span>Acc: <strong>{pipelineDetails.benchmarks.accuracy}%</strong></span>
-              <span>Prec: <strong>{pipelineDetails.benchmarks.precision}%</strong></span>
-              <span>Sens: <strong>{pipelineDetails.benchmarks.recallSensitivity}%</strong></span>
-              <span>Spec: <strong>{pipelineDetails.benchmarks.specificity}%</strong></span>
-              <span>F1: <strong>{pipelineDetails.benchmarks.f1Score}%</strong></span>
-              <span>ROC-AUC: <strong>{pipelineDetails.benchmarks.rocAuc}</strong></span>
-            </div>
-          </div>
-        )}
-
         {/* Visual Inspection & Explainability */}
         <div className="space-y-2">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
@@ -225,7 +178,7 @@ export const ClinicalReportView: React.FC<ClinicalReportViewProps> = ({
         {/* Probability Table */}
         <div className="space-y-2">
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-            Multi-Class Probability Distribution (ISIC / HAM10000)
+            Differential Diagnostic Probability Distribution
           </h3>
 
           <div className="overflow-x-auto">
@@ -274,7 +227,7 @@ export const ClinicalReportView: React.FC<ClinicalReportViewProps> = ({
           <div className="p-2.5 bg-amber-50 rounded-lg border border-amber-200 flex items-start gap-2 text-xs text-amber-950">
             <ShieldAlert className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
             <p className="leading-relaxed text-[11px]">
-              <strong>Medical Disclaimer:</strong> This report is generated by an automated AI screening model (MobileNetV2 + PCA + YOLOv4 + XceptionNet & CNN+LSTM hybrid architecture). It is intended strictly for screening triage and patient education. <strong>It does NOT establish a medical diagnosis or replace physical histopathological biopsy.</strong>
+              <strong>Medical Disclaimer:</strong> This report is generated by an automated AI dermatological screening model. It is intended strictly for screening triage and patient education. <strong>It does NOT establish a medical diagnosis or replace physical histopathological biopsy.</strong>
             </p>
           </div>
 

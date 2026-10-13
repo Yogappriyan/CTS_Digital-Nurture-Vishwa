@@ -30,11 +30,11 @@ export const Footer: React.FC<FooterProps> = ({
               </span>
             </div>
             <p className="text-slate-400 text-xs sm:text-sm max-w-md leading-relaxed">
-              AI-assisted skin lesion screening and educational guidance system based on deep convolutional transfer learning (MobileNetV2 + PCA + YOLOv4 + XceptionNet) and Grad-CAM visual interpretability.
+              AI-assisted skin lesion screening and educational guidance system powered by multimodal vision models and explainable visual attention mapping.
             </p>
             <div className="flex items-center gap-2 text-xs text-teal-400 font-medium">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>HAM10000 / ISIC Benchmark Architecture (96.8% Accuracy)</span>
+              <span>Clinical Dermatological Screening Intelligence</span>
             </div>
           </div>
 

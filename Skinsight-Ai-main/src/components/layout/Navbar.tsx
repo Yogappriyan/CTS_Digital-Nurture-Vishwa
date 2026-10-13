@@ -141,21 +141,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            {/* Live AI Engine Status Pill */}
-            {aiEngineReady !== null && (
-              <div 
-                className={`hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${
-                  aiEngineReady
-                    ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800/60'
-                    : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800/60'
-                }`}
-                title={aiEngineReady ? 'Gemini Multimodal AI is active and responding' : 'GEMINI_API_KEY is not set in environment; running on local heuristic fallback'}
-              >
-                <span className={`w-2 h-2 rounded-full ${aiEngineReady ? 'bg-teal-500 animate-pulse' : 'bg-amber-500'}`} />
-                <span>{aiEngineReady ? 'Gemini AI Active' : 'Offline Heuristic Mode'}</span>
-              </div>
-            )}
-
             {/* Notifications */}
             <NotificationsDropdown onNavigateToAnalysis={onNavigateToAnalysis} />
 
@@ -168,45 +153,58 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>Analyze</span>
             </button>
 
-            {/* Profile Page Access Button */}
-            <button
-              onClick={() => onNavigate('profile')}
-              className={`inline-flex items-center gap-2 p-1 sm:px-2.5 sm:py-1.5 rounded-xl border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
-                currentView === 'profile' || currentView === 'settings'
-                  ? 'border-teal-500 bg-teal-50/80 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 ring-2 ring-teal-500/20'
-                  : 'border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-100 shadow-xs'
-              }`}
-              title="View Clinician Profile & Settings"
-              aria-label="View Clinician Profile & Settings"
-            >
-              {user?.avatarUrl ? (
-                <img
-                  src={user.avatarUrl}
-                  alt={user.name}
-                  referrerPolicy="no-referrer"
-                  className="w-7 h-7 rounded-lg object-cover shadow-xs border border-slate-200 dark:border-slate-700"
-                />
-              ) : (
-                <div className={`w-7 h-7 rounded-lg ${isAdmin ? 'bg-purple-600 text-white' : 'bg-teal-600 text-white'} flex items-center justify-center font-extrabold text-xs shrink-0 shadow-xs`}>
-                  {user?.name ? user.name.charAt(0).toUpperCase() : 'P'}
+            {/* Profile Page Access Button & Transferred AI Active Status below it */}
+            <div className="flex flex-col items-center justify-center -my-1">
+              <button
+                onClick={() => onNavigate('profile')}
+                className={`inline-flex items-center gap-2 p-1 sm:px-2.5 sm:py-1.5 rounded-xl border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${
+                  currentView === 'profile' || currentView === 'settings'
+                    ? 'border-teal-500 bg-teal-50/80 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 ring-2 ring-teal-500/20'
+                    : 'border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-800 dark:text-slate-100 shadow-xs'
+                }`}
+                title="View Clinician Profile & Settings"
+                aria-label="View Clinician Profile & Settings"
+              >
+                {user?.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    referrerPolicy="no-referrer"
+                    className="w-7 h-7 rounded-lg object-cover shadow-xs border border-slate-200 dark:border-slate-700"
+                  />
+                ) : (
+                  <div className={`w-7 h-7 rounded-lg ${isAdmin ? 'bg-purple-600 text-white' : 'bg-teal-600 text-white'} flex items-center justify-center font-extrabold text-xs shrink-0 shadow-xs`}>
+                    {user?.name ? user.name.charAt(0).toUpperCase() : 'P'}
+                  </div>
+                )}
+                <div className="hidden lg:flex flex-col text-left leading-tight pr-1">
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate max-w-[95px]">
+                      {user?.name || (isLoggedIn ? 'Clinician' : 'Guest')}
+                    </span>
+                    {isAdmin && (
+                      <span className="text-[9px] font-extrabold px-1 py-0.2 bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200 rounded">
+                        Admin
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[10px] text-teal-600 dark:text-teal-400 font-semibold truncate max-w-[105px]">
+                    {isAdmin ? 'Admin Panel' : isLoggedIn ? 'Screening User' : 'Guest Mode'}
+                  </span>
+                </div>
+              </button>
+
+              {/* Transferred AI Engine Active Indicator: Placed just below the user login logo, very small and faint / difficult visibility */}
+              {aiEngineReady !== null && (
+                <div 
+                  className="flex items-center gap-1 pt-0.5 text-[7.5px] text-slate-400/30 dark:text-slate-600/30 font-mono tracking-tighter opacity-30 hover:opacity-80 transition-opacity select-none cursor-default leading-none"
+                  title={aiEngineReady ? 'Gemini AI Active' : 'Offline Heuristic Mode'}
+                >
+                  <span className={`w-1 h-1 rounded-full shrink-0 ${aiEngineReady ? 'bg-teal-500/40' : 'bg-amber-500/30'}`} />
+                  <span>{aiEngineReady ? 'Gemini AI Active' : 'Offline Mode'}</span>
                 </div>
               )}
-              <div className="hidden lg:flex flex-col text-left leading-tight pr-1">
-                <div className="flex items-center gap-1">
-                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate max-w-[95px]">
-                    {user?.name || (isLoggedIn ? 'Clinician' : 'Guest')}
-                  </span>
-                  {isAdmin && (
-                    <span className="text-[9px] font-extrabold px-1 py-0.2 bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200 rounded">
-                      Admin
-                    </span>
-                  )}
-                </div>
-                <span className="text-[10px] text-teal-600 dark:text-teal-400 font-semibold truncate max-w-[105px]">
-                  {isAdmin ? 'Admin Panel' : isLoggedIn ? 'Screening User' : 'Guest Mode'}
-                </span>
-              </div>
-            </button>
+            </div>
 
             {/* Mobile hamburger */}
             <button

@@ -207,10 +207,10 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onStartAnalysis, i
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                  Or Test With Verified Dermoscopy Benchmark Samples
+                  Or Test With Reference Clinical Cases
                 </h4>
               </div>
-              <span className="text-[11px] text-slate-500">ISIC Archive / HAM10000 Cases</span>
+              <span className="text-[11px] text-slate-500">Clinical Case Studies</span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -233,7 +233,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onStartAnalysis, i
                       {preset.title.split('(')[0]}
                     </p>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                      ISIC: {preset.categoryCode.toUpperCase()}
+                      Category: {preset.categoryCode.toUpperCase()}
                     </p>
                   </div>
                 </button>
@@ -297,25 +297,27 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onStartAnalysis, i
             <div className="flex items-center gap-2">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex items-center gap-1.5"
+                className="px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+                title="Replace with another image"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Replace</span>
+                <RefreshCw className="w-3.5 h-3.5 text-teal-600" />
+                <span>Replace Image</span>
               </button>
               <button
                 onClick={clearSelection}
-                className="px-3 py-1.5 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors flex items-center gap-1.5"
+                className="px-3 py-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+                title="Delete only this image"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                <span>Remove</span>
+                <span>Delete Image Only</span>
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start max-w-full overflow-hidden">
             {/* Left: Image Box */}
-            <div className="md:col-span-5 space-y-2">
-              <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+            <div className="md:col-span-5 space-y-2 max-w-full">
+              <div className="relative aspect-square max-h-72 mx-auto rounded-xl overflow-hidden bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-center">
                 <img
                   src={previewUrl}
                   alt="Uploaded skin lesion"
@@ -324,6 +326,25 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onStartAnalysis, i
                 <div className="absolute top-2 right-2 px-2 py-1 bg-slate-900/80 backdrop-blur text-[11px] text-white font-mono rounded">
                   {metadata.dimensions.width} × {metadata.dimensions.height}
                 </div>
+              </div>
+              <div className="flex items-center justify-center gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>Replace Photo</span>
+                </button>
+                <span className="text-slate-300 dark:text-slate-700">•</span>
+                <button
+                  type="button"
+                  onClick={clearSelection}
+                  className="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  <span>Delete Photo</span>
+                </button>
               </div>
               <p className="text-[11px] text-center text-slate-500">
                 Target resolution normalized to 224×224 tensor for EfficientNet

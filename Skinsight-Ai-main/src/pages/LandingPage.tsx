@@ -34,24 +34,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
 
   const faqs = [
     {
-      q: 'What is the hybrid dermatological screening pipeline?',
-      a: 'The pipeline executes a 6-stage end-to-end framework: (1) Image acquisition & preprocessing (DullRazor hair suppression, Gray-World color constancy, Adaptive CLAHE), (2) MobileNetV2 deep feature extraction, (3) PCA feature selection retaining >=95% variance, (4) YOLOv4 lesion localization & boundary delineation, (5) XceptionNet classification + CNN+LSTM radial spatial texture sequencing, and (6) Grad-CAM Explainable AI (XAI) coupled with a GenAI conversational interface.'
+      q: 'How does the AI dermatological screening work?',
+      a: 'The screening analyzes uploaded skin photos using advanced computer vision: (1) Image quality & lighting normalization, (2) Deep feature analysis, (3) Lesion localization & boundary evaluation, (4) Fine-grained multi-class pattern classification, and (5) Grad-CAM visual attention mapping paired with interactive clinical guidance.'
     },
     {
       q: 'Can SkinSight AI definitively diagnose skin cancer or melanoma?',
       a: 'No. SkinSight AI is an assistive screening and clinical explainability framework designed to detect morphological patterns, localize lesions, and calculate quantitative risk probabilities. It cannot replace a physical examination, dermatoscopy, and histopathological biopsy by a licensed physician.'
     },
     {
-      q: 'How does PCA feature selection optimize deep embeddings?',
-      a: 'MobileNetV2 outputs a 1,280-dimensional feature vector. Principal Component Analysis (PCA) projects this vector onto orthogonal principal components, reducing dimensionality to 64 components while retaining 96.4% of total diagnostic variance for ultra-fast, noise-resilient edge inference.'
+      q: 'What features are examined during image analysis?',
+      a: 'The system extracts morphological visual features including lesion asymmetry, border irregularities, pigment color variegation, diameter estimates, and focal dermoscopic structures across concentric zones.'
     },
     {
-      q: 'How does YOLOv4 and XceptionNet + CNN+LSTM improve screening accuracy?',
-      a: 'YOLOv4 accurately delineates lesion bounding boxes and contours amidst varied skin tones. XceptionNet handles depthwise separable multi-class classification, while the hybrid CNN+LSTM/GRU models directional spatial texture transitions across radial slices, achieving 96.8% Accuracy and 97.1% Sensitivity.'
+      q: 'How does the model evaluate skin lesion patterns?',
+      a: 'The neural network evaluates fine-grained spatial and radial texture transitions across skin surfaces, identifying atypical pigment patterns and computing calibrated probabilities across 7 major clinical dermatological classes.'
     },
     {
-      q: 'Why is Grad-CAM coupled with the GenAI conversational assistant?',
-      a: 'Grad-CAM generates gradient activation heatmaps showing influential pixel clusters. The GenAI assistant interprets these heatmaps in plain language, breaks down technical metrics, and creates structured consultation checklists for doctor visits.'
+      q: 'Why is Grad-CAM coupled with the conversational assistant?',
+      a: 'Grad-CAM generates visual attention heatmaps showing influential diagnostic regions. The assistant explains these visual cues in plain language, breaks down technical metrics, and helps formulate structured questions for doctor visits.'
     }
   ];
 
@@ -65,15 +65,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
             <div className="lg:col-span-7 space-y-4 text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-950/70 border border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-300 text-xs font-semibold">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Hybrid Computer Vision & Explainable AI (XAI) Architecture</span>
+                <span>Clinical Computer Vision & Explainable AI (XAI)</span>
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-                End-to-End <span className="text-teal-600 dark:text-teal-400">Dermatological Screening</span> & Explainable AI
+                Intelligent <span className="text-teal-600 dark:text-teal-400">Dermatological Screening</span> & Explainable AI
               </h1>
 
               <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-                Advanced multi-stage pipeline: Artifact suppression (DullRazor & CLAHE), MobileNetV2 + PCA feature selection, YOLOv4 lesion localization, XceptionNet + CNN+LSTM fine-grained classification, and Grad-CAM XAI with GenAI conversational guidance.
+                Advanced clinical screening: Image enhancement, lesion boundary localization, multi-class risk assessment, and explainable Grad-CAM visual attention mapping with clinical guidance.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
@@ -81,7 +81,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
                   onClick={() => onNavigate('new-analysis')}
                   className="px-5 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  <span>Start Pipeline Screening</span>
+                  <span>Start Skin Screening</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
 
@@ -120,11 +120,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                      Pipeline Detection Preview
+                      Screening Detection Preview
                     </span>
                   </div>
                   <span className="text-[10px] font-mono text-teal-700 dark:text-teal-400 bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded font-bold">
-                    YOLOv4 + XceptionNet
+                    Clinical AI
                   </span>
                 </div>
 
@@ -139,15 +139,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
                     <div className="absolute inset-0 bg-linear-to-tr from-blue-600/30 via-yellow-400/40 to-red-600/60 mix-blend-screen pointer-events-none" />
                   )}
 
-                  {/* YOLOv4 Bounding Box */}
+                  {/* Lesion ROI Bounding Box */}
                   <div className="absolute top-[18%] left-[22%] w-[58%] h-[60%] border-2 border-emerald-400 bg-emerald-500/10 pointer-events-none">
                     <span className="absolute -top-5 left-0 bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
-                      YOLOv4 ROI (96.4%)
+                      Lesion ROI (96.4%)
                     </span>
                   </div>
 
                   <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-[11px] bg-slate-950/80 backdrop-blur px-2.5 py-1 rounded-lg text-white">
-                    <span>Grad-CAM XAI Layer</span>
+                    <span>Grad-CAM Visual Attention</span>
                     <button
                       onClick={() => setHeroGradcamOverlay(!heroGradcamOverlay)}
                       className="text-teal-300 hover:text-white font-semibold underline"
@@ -171,7 +171,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
                     <div className="h-full bg-teal-600 rounded-full w-[88%]" />
                   </div>
                   <p className="text-[11px] text-slate-500 leading-tight">
-                    PCA 64-D features extracted. XceptionNet + CNN+LSTM agreement: 97.5%.
+                    Morphological visual patterns identified. Multi-class model agreement: 97.5%.
                   </p>
                 </div>
 
@@ -193,17 +193,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
         <MedicalDisclaimerBanner compact />
       </section>
 
-      {/* 3. Six-Stage End-to-End Pipeline Overview */}
+      {/* 3. Six-Stage Screening Architecture Overview */}
       <section id="pipeline-overview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-1.5">
           <span className="text-xs font-bold uppercase tracking-wider text-teal-700 dark:text-teal-400">
-            End-to-End Architecture
+            Screening Architecture
           </span>
           <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100">
-            Proposed Hybrid Computer Vision & XAI Framework
+            Clinical AI Screening & Explainability Framework
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-            Engineered to bridge high-dimensional deep learning representations with rigorous clinical interpretability
+            Engineered to bridge high-resolution computer vision representations with rigorous clinical interpretability
           </p>
         </div>
 
@@ -218,10 +218,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
               </span>
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              Artifact Suppression & CLAHE
+              Image Normalization & Contrast
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              DullRazor multi-directional morphological filtering eliminates hair occlusions. Gray-World color constancy standardizes illuminant spectra, and Adaptive CLAHE optimizes localized contrast.
+              Standardizes illuminant spectra across dermoscopic images and enhances localized contrast to reveal subtle atypical pigment lattices without amplifying background noise.
             </p>
           </div>
 
@@ -231,14 +231,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
                 02
               </div>
               <span className="text-[10px] font-bold uppercase text-teal-600 bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded">
-                Feature Selection
+                Feature Analysis
               </span>
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              MobileNetV2 + PCA Optimization
+              Deep Feature Representation
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Extracts 1280-D spatial embeddings using inverted residual bottlenecks. Principal Component Analysis (PCA) projects onto 64 orthogonal principal components, retaining ≥95% diagnostic variance.
+              Extracts high-order spatial embeddings and projects key diagnostic components, isolating structural dermatological patterns while filtering acquisition artifacts.
             </p>
           </div>
 
@@ -252,10 +252,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
               </span>
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              YOLOv4 Boundary Delineation
+              Lesion Boundary Delineation
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              CSPDarknet53 feature pyramid localizes lesion Region of Interest (ROI) bounding boxes, calculating surface area in mm², aspect ratio asymmetry, and margin sharpness.
+              Localizes lesion Region of Interest (ROI) contours, evaluating surface area, aspect ratio asymmetry, and margin sharpness across diverse skin tones.
             </p>
           </div>
 
@@ -269,10 +269,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
               </span>
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              XceptionNet & CNN+LSTM Hybrid
+              Multi-Class Risk Assessment
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Depthwise separable convolutions decouple spatial and channel correlations. Bidirectional LSTM/GRU captures sequential radial texture transitions across concentric slices.
+              Decouples spatial and texture correlations to capture subtle pigment transitions across concentric radial slices for fine-grained differential classification.
             </p>
           </div>
 
@@ -282,14 +282,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
                 05
               </div>
               <span className="text-[10px] font-bold uppercase text-teal-600 bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded">
-                Evaluation
+                Validation
               </span>
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              Quantitative Benchmarks
+              Clinical Benchmarks
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Rigorously benchmarked across ISIC/HAM10000 datasets: 96.8% Accuracy, 95.4% Precision, 97.1% Sensitivity, 98.2% Specificity, 96.2% F1-Score, and 0.989 ROC-AUC.
+              Rigorously validated against extensive clinical dermoscopic libraries, delivering calibrated probabilistic screening metrics and strong sensitivity profiles.
             </p>
           </div>
 
@@ -299,14 +299,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
                 06
               </div>
               <span className="text-[10px] font-bold uppercase text-teal-600 bg-teal-50 dark:bg-teal-950 px-2 py-0.5 rounded">
-                Explainability & GenAI
+                Explainability & Guidance
               </span>
             </div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              Grad-CAM XAI & Conversational Bot
+              Grad-CAM Visual Attention
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Computes gradient activation heatmaps for visual interpretability, tightly coupled with our GenAI assistant for patient-centered consultation and physician prep.
+              Computes gradient activation heatmaps for visual interpretability, tightly coupled with our conversational assistant for patient consultation and physician prep.
             </p>
           </div>
         </div>
@@ -398,10 +398,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
         <div className="bg-linear-to-r from-slate-900 via-slate-800 to-teal-950 text-white rounded-2xl p-6 sm:p-8 text-center space-y-4 shadow-lg border border-slate-800">
           <div className="max-w-2xl mx-auto space-y-2">
             <h2 className="text-xl sm:text-3xl font-extrabold tracking-tight">
-              Ready to Run the Hybrid Screening Pipeline?
+              Ready to Screen a Skin Lesion?
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Experience artifact suppression, MobileNetV2 + PCA feature selection, YOLOv4 boundary extraction, XceptionNet classification, and interactive GenAI guidance.
+              Experience automated image enhancement, lesion localization, comprehensive risk assessment, and clinical guidance.
             </p>
           </div>
 
@@ -411,7 +411,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate, onSelectSa
               className="px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-slate-950 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-colors flex items-center gap-2 cursor-pointer"
             >
               <Upload className="w-4 h-4" />
-              <span>Start Screening Image</span>
+              <span>Start Skin Screening</span>
             </button>
             <button
               onClick={() => onNavigate('dashboard')}

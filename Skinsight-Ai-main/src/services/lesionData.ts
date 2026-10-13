@@ -423,18 +423,17 @@ export const SAMPLE_DERMOSCOPY_CASES = [
     id: 'DEMO-001',
     title: 'Atypical Pigmented Lesion (Left Shoulder)',
     categoryCode: 'nv',
-    confidence: 0.88,
+    confidence: 0.93,
     imageUrl: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=80',
     description: 'Regular reticular pigment network on sun-exposed upper trunk, mild asymmetry.',
     riskLevel: 'benign-low' as const,
     date: '2026-08-16',
     status: 'Completed' as const,
     probabilities: [
-      { categoryCode: 'nv', name: 'Melanocytic Nevus', clinicalName: 'Benign Melanocytic Nevus', probability: 0.88, percentage: 88, color: '#0d9488' },
-      { categoryCode: 'bkl', name: 'Benign Keratosis', clinicalName: 'Seborrheic Keratosis', probability: 0.06, percentage: 6, color: '#64748b' },
-      { categoryCode: 'mel', name: 'Melanoma (Suspected)', clinicalName: 'Malignant Melanoma', probability: 0.03, percentage: 3, color: '#ef4444' },
-      { categoryCode: 'df', name: 'Dermatofibroma', clinicalName: 'Benign Dermatofibroma', probability: 0.02, percentage: 2, color: '#94a3b8' },
-      { categoryCode: 'akiec', name: 'Actinic Keratosis', clinicalName: 'Actinic Keratosis', probability: 0.01, percentage: 1, color: '#f59e0b' }
+      { categoryCode: 'nv', name: 'Melanocytic Nevus', clinicalName: 'Benign Melanocytic Nevus', probability: 0.93, percentage: 93, color: '#0d9488' },
+      { categoryCode: 'bkl', name: 'Benign Keratosis', clinicalName: 'Seborrheic Keratosis', probability: 0.04, percentage: 4, color: '#64748b' },
+      { categoryCode: 'mel', name: 'Melanoma (Suspected)', clinicalName: 'Malignant Melanoma', probability: 0.02, percentage: 2, color: '#ef4444' },
+      { categoryCode: 'df', name: 'Dermatofibroma', clinicalName: 'Benign Dermatofibroma', probability: 0.01, percentage: 1, color: '#94a3b8' }
     ]
   },
   {

@@ -190,7 +190,7 @@ export default function App() {
   const activeAnalysis = analyses.find(a => a.id === selectedAnalysisId) || analyses[0] || null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
+    <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
       {/* Top Navbar with Profile Access */}
       <Navbar
         currentView={currentView}
@@ -202,7 +202,7 @@ export default function App() {
       />
 
       {/* Main View Router */}
-      <main className="flex-1 bg-white dark:bg-slate-950">
+      <main className="flex-1 w-full max-w-full overflow-x-hidden bg-white dark:bg-slate-950">
         {currentView === 'landing' && (
           <LandingPage
             onNavigate={handleNavigate}

@@ -56,7 +56,7 @@ export function generateSkinAnalysisPDF(analysis: AnalysisResult): void {
   doc.text('REPORT ID', margin + 5, y + 6);
   doc.text('DATE GENERATED', margin + 50, y + 6);
   doc.text('IMAGE QUALITY', margin + 105, y + 6);
-  doc.text('ARCHITECTURE', margin + 145, y + 6);
+  doc.text('EXAMINATION', margin + 145, y + 6);
 
   doc.setTextColor(...darkTextColor);
   doc.setFont('helvetica', 'normal');
@@ -64,7 +64,7 @@ export function generateSkinAnalysisPDF(analysis: AnalysisResult): void {
   doc.text(analysis.id, margin + 5, y + 12);
   doc.text(new Date(analysis.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }), margin + 50, y + 12);
   doc.text(analysis.imageMetadata.qualityScore || 'Standard', margin + 105, y + 12);
-  doc.text((analysis.modelInfo.architecture || 'EfficientNet + CNN').substring(0, 22), margin + 145, y + 12);
+  doc.text('Dermatological AI', margin + 145, y + 12);
 
   y += 28;
 

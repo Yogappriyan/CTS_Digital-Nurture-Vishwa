@@ -254,7 +254,7 @@ export interface UserProfile {
   joinedDate: string;
   preferences: {
     theme: ThemeMode;
-    modelArchitecture: 'MobileNetV2 + PCA + XceptionNet' | 'EfficientNet-B0' | 'ResNet50-Derm';
+    modelArchitecture: 'Multimodal Deep Neural Network' | 'MobileNetV2 + PCA + XceptionNet' | 'EfficientNet-B0' | 'ResNet50-Derm' | string;
     gradcamColormap: 'jet' | 'turbo' | 'thermal' | 'hotspot';
     emailAlerts: boolean;
     highRiskAlerts: boolean;

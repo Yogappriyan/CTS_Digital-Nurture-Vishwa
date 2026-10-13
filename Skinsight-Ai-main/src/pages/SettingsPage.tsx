@@ -22,7 +22,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 }) => {
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
-  const [architecture, setArchitecture] = useState(user.preferences.modelArchitecture || 'MobileNetV2 + PCA + XceptionNet');
+  const [architecture, setArchitecture] = useState(user.preferences.modelArchitecture || 'Multimodal Deep Neural Network');
   const [colormap, setColormap] = useState(user.preferences.gradcamColormap || 'jet');
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [isClearModalOpen, setIsClearModalOpen] = useState(false);
@@ -130,12 +130,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 onChange={(e) => setArchitecture(e.target.value as any)}
                 className="w-full px-3 py-2 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-slate-900 dark:text-slate-100"
               >
-                <option value="MobileNetV2 + PCA + XceptionNet">MobileNetV2 + PCA + YOLOv4 + XceptionNet (Hybrid Pipeline)</option>
-                <option value="EfficientNet-B0">EfficientNet-B0 (Standard HAM10000 Transfer Learning)</option>
-                <option value="ResNet50-Derm">ResNet50-Derm (Residual Convolutional Backbone)</option>
+                <option value="Multimodal Deep Neural Network">Multimodal Deep Neural Network (Recommended)</option>
+                <option value="High-Sensitivity CNN">High-Sensitivity Convolutional Network</option>
+                <option value="Standard Ensemble">Standard Dermoscopic Ensemble</option>
               </select>
               <p className="text-[11px] text-slate-500 mt-1">
-                Pre-trained and evaluated on 10,015 ISIC / HAM10000 dermoscopy patches.
+                Calibrated across clinical dermoscopic references and validated skin condition classes.
               </p>
             </div>
 

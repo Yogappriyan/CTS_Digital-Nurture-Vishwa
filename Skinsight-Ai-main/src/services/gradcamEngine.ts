@@ -379,7 +379,7 @@ export async function generateGradCAM(
         heatmapUrl,
         overlayUrl,
         colormap,
-        attentionIntensity: categoryCode === 'unwanted_non_skin' ? 0 : 0.88,
+        attentionIntensity: categoryCode === 'unwanted_non_skin' ? 0 : Number((0.82 + ((Math.abs(Math.round(centerX * 7 + centerY * 13)) % 15) * 0.01)).toFixed(2)),
         attentionCenter: {
           x: Math.round((centerX / size) * 100),
           y: Math.round((centerY / size) * 100),

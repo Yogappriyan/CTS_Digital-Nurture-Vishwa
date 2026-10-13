@@ -5,11 +5,7 @@ import {
   MessageSquare, 
   RotateCcw,
   Sparkles, 
-  AlertTriangle, 
   CheckCircle2,
-  Info,
-  Cpu, 
-  Layers,
   UploadCloud,
   AlertCircle,
   Download
@@ -20,7 +16,6 @@ import { ConfidenceMeter } from '../components/analysis/ConfidenceMeter';
 import { ProbabilityDistribution } from '../components/analysis/ProbabilityDistribution';
 import { GradCAMViewer } from '../components/analysis/GradCAMViewer';
 import { InterpretationCard } from '../components/analysis/InterpretationCard';
-import { HybridPipelineViewer } from '../components/analysis/HybridPipelineViewer';
 import { MedicalDisclaimerBanner } from '../components/layout/MedicalDisclaimerBanner';
 import { NearbySkincareModal } from '../components/modals/NearbySkincareModal';
 
@@ -62,14 +57,14 @@ export const AnalysisResultPage: React.FC<AnalysisResultPageProps> = ({
           </button>
           <div className="flex items-center gap-2">
             <h1 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-              AI Dermatological Screening Result
+              AI Dermatological Screening Report
             </h1>
             <span className="px-2 py-0.5 text-[10px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded font-bold">
               {analysis.id}
             </span>
           </div>
           <p className="text-xs text-slate-500 font-mono">
-            Analyzed {new Date(analysis.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} • {modelInfo.architecture}
+            Analyzed on {new Date(analysis.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </p>
         </div>
 
@@ -168,21 +163,6 @@ export const AnalysisResultPage: React.FC<AnalysisResultPageProps> = ({
       {/* Medical Safety Disclaimer Strip */}
       <MedicalDisclaimerBanner compact />
 
-      {/* AI Engine Source Indicator & Notice */}
-      {prediction.aiEngineStatus && prediction.aiEngineStatus !== 'gemini_active' && (
-        <div className="p-4 rounded-xl border border-amber-300 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-3 shadow-xs">
-          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <p className="font-bold">
-              Notice: Computed via {prediction.aiModelUsed || 'Local Feature Heuristic Engine'}
-            </p>
-            <p className="text-amber-800 dark:text-amber-300 leading-relaxed">
-              {prediction.aiNotice || 'GEMINI_API_KEY is not configured in your localhost or server environment. To unlock real-time multimodal Gemini AI vision classifications, add your GEMINI_API_KEY to your environment.'}
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Main Prediction Summary Card */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
@@ -201,15 +181,6 @@ export const AnalysisResultPage: React.FC<AnalysisResultPageProps> = ({
               }`}>
                 {prediction.categoryCode.toUpperCase()} • {prediction.riskLevel.replace('-', ' ').toUpperCase()}
               </span>
-              {prediction.aiEngineStatus === 'gemini_active' ? (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300 border border-teal-200 dark:border-teal-800">
-                  {prediction.aiModelUsed || 'Gemini Vision'}
-                </span>
-              ) : (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                  Offline Fallback Heuristic
-                </span>
-              )}
             </div>
 
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
@@ -286,35 +257,11 @@ export const AnalysisResultPage: React.FC<AnalysisResultPageProps> = ({
         </div>
       )}
 
-      {/* End-to-End Hybrid Computer Vision Pipeline Inspector */}
-      <HybridPipelineViewer 
-        analysis={analysis} 
-        onOpenAssistantWithPrompt={(prompt) => onOpenAssistant(prompt)}
-      />
-
-      {/* Grid: Probability Distribution & Grad-CAM Explainability */}
+      {/* Grid: Differential Probability Distribution & Grad-CAM Heatmap */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Multi-Class Probability Breakdown */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className="lg:col-span-5">
           <ProbabilityDistribution probabilities={probabilities} />
-
-          {/* Pipeline Specifications Card */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs space-y-2.5 text-xs">
-            <div className="flex items-center gap-2">
-              <Cpu className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-              <h4 className="font-bold text-slate-900 dark:text-slate-100">
-                Pipeline Specifications
-              </h4>
-            </div>
-            <div className="space-y-1 font-mono text-[11px] text-slate-600 dark:text-slate-400">
-              <p><span className="text-slate-400">Vision Model:</span> Gemini 3.7 Flash Multimodal</p>
-              <p><span className="text-slate-400">Backbone:</span> MobileNetV2 (1280-D)</p>
-              <p><span className="text-slate-400">Feature Selection:</span> PCA (64-D, 96.4% Var)</p>
-              <p><span className="text-slate-400">Detector:</span> YOLOv4 CSPDarknet53 SPP</p>
-              <p><span className="text-slate-400">Classifier:</span> XceptionNet + CNN+LSTM Hybrid</p>
-              <p><span className="text-slate-400">Inference Latency:</span> {modelInfo.inferenceTimeMs} ms</p>
-            </div>
-          </div>
         </div>
 
         {/* Explainable Grad-CAM Heatmap Viewer */}

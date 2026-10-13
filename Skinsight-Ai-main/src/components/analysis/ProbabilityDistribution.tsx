@@ -19,7 +19,7 @@ export const ProbabilityDistribution: React.FC<ProbabilityDistributionProps> = (
             Multi-Class Probability Breakdown
           </h4>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Softmax output distribution across 7 ISIC skin lesion categories
+            Differential probability distribution across evaluated skin conditions
           </p>
         </div>
         <span className="text-[11px] font-mono text-slate-400 px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded">
