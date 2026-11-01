@@ -1,0 +1,346 @@
+# MOTOSYNQ AI — Companion Website: Google AI Studio Build Prompt
+
+> Paste everything below the line into AI Studio (Build mode). If the model truncates, paste it stage by stage (Stage 1 first, then say "Continue with Stage 2", and so on).
+
+---
+
+## ROLE
+You are a senior full-stack engineer and UI/UX designer. Build a production-quality, responsive **companion website** for **MOTOSYNQ AI**, an existing Android application (Kotlin + Jetpack Compose) that records motorcycle audio plus accelerometer and gyroscope data during controlled, stationary inspections. The Android app stays the primary data-collection product. The website is a companion dashboard that shows the same user's synced data and analysis results.
+
+**Project title:** MOTOSYNQ AI: Intelligent Motorcycle Condition Monitoring Through Multimodal Sensor Fusion
+**Positioning:** An AI-assisted screening tool. It does NOT replace a qualified mechanic, and no result is a confirmed mechanical diagnosis.
+
+---
+
+## NON-NEGOTIABLE HONESTY RULES (apply to every page, component, API and test)
+1. Never fabricate diagnostic results, sensor readings, health scores, accuracy figures or trends. Show proper empty states when there is no data.
+2. If no trained model is configured, the analysis returns the status `model_not_configured` and the UI shows **"AI model not configured"** or **"Analysis unavailable"**. Never a fake prediction.
+3. Any demo or illustrative content must carry a visible **"Sample data"** badge and live only in a clearly separated `/src/demo` folder, switchable by `VITE_ENABLE_DEMO_DATA=true`. Default is `false`.
+4. Do not show a numeric "Vehicle Health Score" until a validated scoring method exists. Show model-supported classifications and observations instead. Include a disabled placeholder card explaining why.
+5. Fault-specific classes (engine, chain/sprocket, valve, bearing, idle, exhaust) are displayed only if the model response explicitly lists them as validated in its `supported_classes` metadata. Otherwise only "Normal pattern" vs "Abnormal pattern" is shown.
+6. Smartphone motion sensors measure the phone's motion, not engine vibration directly. Wherever sensor graphs appear, add a short note saying so and that mounting position affects interpretation.
+7. Always visually and textually separate **AI-generated observations** (labelled "AI observation – not a diagnosis") from **mechanic-confirmed diagnoses** (labelled "Mechanic confirmed", with mechanic name and date).
+8. Do not claim the Android app is connected, the AI is trained, or fault detection works until that part is actually implemented and tested. Report remaining work explicitly in the README under "Known gaps / remaining integration work".
+9. Never put service-role keys or secrets in browser code. Use only `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the frontend.
+
+---
+
+## TECH STACK
+| Layer | Technology |
+|---|---|
+| Frontend | React 18 + Vite + TypeScript (strict mode) |
+| Styling | Tailwind CSS |
+| Routing | React Router v6 |
+| 3D | React Three Fiber + @react-three/drei (Three.js) |
+| Auth / DB / Storage | Supabase Auth, PostgreSQL, Storage |
+| Charts | Recharts (analytics), Canvas/Web Audio for waveform + spectrogram preview |
+| PDF | jsPDF + jspdf-autotable (or @react-pdf/renderer) |
+| Forms / validation | react-hook-form + zod |
+| Data fetching | TanStack Query |
+| AI backend | Python FastAPI (NumPy, SciPy, Librosa, scikit-learn, joblib) |
+| Frontend hosting | Vercel |
+| API hosting | Separate container host (Render / Railway / Fly.io / Cloud Run) |
+| Transport | HTTPS REST, JWT bearer tokens issued by Supabase Auth |
+
+Keep **frontend, database and AI backend logically separate**. Output a monorepo:
+
+```
+motosynq-ai/
+├─ web/                      # React + Vite frontend
+│  ├─ src/
+│  │  ├─ app/                # router, providers, layout
+│  │  ├─ pages/              # Login, Dashboard, DigitalTwin, DiagnosticLab, HealthPassport, Inspection, Settings
+│  │  ├─ components/         # ui/, charts/, twin/, lab/, passport/
+│  │  ├─ features/           # auth, vehicles, sessions, analysis, reports, sharing
+│  │  ├─ lib/                # supabaseClient, apiClient, validators, formatters
+│  │  ├─ hooks/
+│  │  ├─ types/
+│  │  └─ demo/               # sample data only, flagged
+│  ├─ tests/
+│  └─ .env.example
+├─ api/                      # FastAPI service
+│  ├─ app/
+│  │  ├─ main.py
+│  │  ├─ routers/            # sessions.py, vehicles.py, analysis.py, reports.py
+│  │  ├─ core/               # config.py, security.py (JWT verify), errors.py
+│  │  ├─ services/           # audio_validation.py, sensor_validation.py, alignment.py, features.py, inference.py, storage.py
+│  │  ├─ models/             # pydantic schemas
+│  │  └─ ml/                 # model loader, model_card.json (artifacts not committed)
+│  ├─ tests/
+│  ├─ requirements.txt
+│  ├─ Dockerfile
+│  └─ .env.example
+├─ supabase/
+│  ├─ migrations/            # 0001_schema.sql, 0002_rls.sql, 0003_storage.sql
+│  └─ seed.sql               # EMPTY of fake diagnostic data
+├─ docs/
+│  ├─ API.md
+│  ├─ ANDROID_INTEGRATION.md # sample Kotlin client (Retrofit/OkHttp)
+│  └─ SECURITY.md
+└─ README.md
+```
+
+---
+
+## VISUAL DESIGN
+Professional motorcycle-engineering and diagnostics interface.
+- Backgrounds: deep navy (`#0B1220`) and charcoal (`#12171F`, `#1A212C`). Cards slightly lighter with 1px subtle borders.
+- Accents: cyan (`#22D3EE`) and electric blue (`#3B82F6`). Status colors: Normal = green-teal, Attention = amber, Unknown = slate-grey, Error = red.
+- Typography: Inter for UI, JetBrains Mono for numeric/technical values. Clear hierarchy, minimum 14px body text, WCAG AA contrast.
+- Subtle animations only (fade/slide 150–250 ms, skeleton loaders). Respect `prefers-reduced-motion`.
+- Avoid heavy neon glows, clutter and decorative elements that reduce readability.
+- Responsive: desktop sidebar navigation, tablet collapsible rail, mobile bottom-tab bar plus drawer.
+- Consistent reusable components: Card, StatusBadge, StatTile, EmptyState, ErrorState, Skeleton, Modal, Toast, FileDropzone, DataTable, Tabs, Stepper, ConfirmDialog.
+- Accessibility: semantic HTML, ARIA labels, keyboard navigation, visible focus rings, alt text, chart data available as a table toggle.
+- Use the MOTOSYNQ AI name and a simple original wordmark/logo (SVG) combining a sound-wave and a motorcycle-wheel motif.
+
+---
+
+## ROUTES (React Router, with protected routes)
+| Route | Access | Purpose |
+|---|---|---|
+| `/login` | public | Sign in / sign up / password reset (Supabase Auth, email+password; optional Google OAuth) |
+| `/dashboard` | protected | Overview |
+| `/digital-twin` | protected | 3D motorcycle + component panel |
+| `/diagnostic-lab` | protected | Upload, visualize, analyze, compare |
+| `/health-passport` | protected | Vehicle profiles, history, reports, sharing |
+| `/inspection/:id` | protected | Session detail |
+| `/settings` | protected | Profile, privacy, data export/deletion |
+| `/shared/:token` | public (token-gated) | View a single explicitly shared report |
+| `*` | public | 404 page |
+
+Unauthenticated users are redirected to `/login` with return-URL preservation. Provide an `<AuthGuard>` wrapper, session persistence and graceful token-expiry handling.
+
+---
+
+## PAGE SPECIFICATIONS
+
+### 1. `/dashboard`
+Show:
+- Registered motorcycle profiles (cards with nickname, make/model/year, last inspection date).
+- Total inspection sessions (count from DB).
+- Latest completed analysis (status, model version, timestamp, result category, uncertainty).
+- Recent recordings (list with duration, vehicle, play button).
+- Historical sound and sensor trend charts built **only from stored analysis_results/feature summaries**.
+- Maintenance timeline (from `maintenance_events`).
+- "Pending inspection recommendations" (from stored recommendations, e.g. "Repeat recording: too noisy").
+- Sync status indicator ("Last synced from Android app: <timestamp>" or "No data synced yet").
+Empty state for every section when no data exists, with a call to action ("Record your first inspection in the Android app" and "Upload a recording in the Diagnostic Lab").
+
+### 2. `/digital-twin` — Motorcycle Digital Twin
+- React Three Fiber canvas with OrbitControls (orbit, zoom, pan limits), reset-camera button, touch gestures on mobile.
+- Use a properly licensed GLB model **only if** a license-compatible file is provided in `/public/models` with a `LICENSE` note. Otherwise generate a clean simplified procedural 3D motorcycle (frame, two wheels, engine block, chain/sprocket, exhaust, tank, seat) and label it **"Simplified illustrative model"**.
+- Selectable components: **Engine, Chain/Sprocket, Wheel/Bearing, Exhaust**. Hover highlight, click select, keyboard-accessible list alternative beside the canvas.
+- Side panel for the selected component shows:
+  - Current status badge: **Normal Pattern / Attention Recommended / Unknown – Insufficient Evidence**
+  - Evidence source (validated model output with model version, or verified mechanic record)
+  - Inspection history for that component (linked sessions)
+  - Recorded observations, split into "AI observations" and "Mechanic-confirmed"
+  - Latest related recording and report links
+- **Status rule:** default is *Unknown / Insufficient Evidence*. A status other than Unknown is set only from (a) a validated model output whose `supported_classes` includes that component, or (b) a verified mechanic record. Selecting a component or having a sample recording must never change its status.
+- Vehicle selector at top (twin is per vehicle).
+- Fallback if WebGL is unavailable: a 2D labelled SVG component diagram with the same selection panel. Detect with a `webgl-support` check and show a notice.
+- Lazy-load the 3D bundle; show a skeleton while loading.
+
+### 3. `/diagnostic-lab` — AI Diagnostic Lab
+Workspace layout with steps: **Upload → Validate → Visualize → Analyze → Review/Compare**.
+
+**Upload**
+- WAV audio upload (drag and drop plus picker); optional accelerometer CSV, gyroscope CSV, and `session.json` metadata (matching the Android app's session package: `audio.wav`, `accelerometer.csv`, `gyroscope.csv`, `session.json`). Also accept the exported ZIP and unpack client-side.
+- Attach to a vehicle and optionally an existing session, or create a new session.
+- Consent checkbox: "I am authorized to upload this recording."
+
+**Client-side validation** (also repeated server-side)
+- WAV only (check RIFF/WAVE header, not just extension); max file size 50 MB (configurable); duration 3 s – 300 s; sample rate and channel count read from header and displayed (recommended 16 kHz mono, others accepted but flagged); reject empty/corrupt files with a specific message.
+- CSV: required columns (`timestamp`, `x`, `y`, `z`), numeric validation, monotonic timestamps, missing-value report, max 20 MB.
+- JSON: zod schema validation (session ID, vehicle ID, start/end timestamps, sample rate, channels, sensor availability, recording configuration, processing status).
+- Show a validation report table with pass/warn/fail per check.
+
+**Visualization**
+- Waveform (canvas, zoom and pan, clipping markers, silent-section hints).
+- Frequency spectrum (FFT magnitude, log-frequency option).
+- Spectrogram (STFT, client-side preview via Web Audio / a lightweight FFT library, or the server-provided image when the API returns it).
+- Sensor graphs for accelerometer and gyroscope (X/Y/Z lines, magnitude, with the "phone motion ≠ direct engine vibration" note).
+- Feature table from the API: RMS energy, spectral centroid, bandwidth, roll-off, zero-crossing rate, MFCC summary, plus sensor features (mean, std, RMS acceleration, magnitude stats, axis variability, gyroscope magnitude stats). Describe each feature in a tooltip and state that features alone don't prove a fault.
+
+**Analysis**
+- "Analyze" button calls the API contract below. Show job progress (queued → validating → preprocessing → extracting features → inference → storing), polling with exponential backoff, cancel option, and meaningful errors.
+- Result card: result category (`normal_pattern`, `abnormal_pattern`, `inconclusive`, `unsuitable_recording`, `model_not_configured`), confidence and uncertainty, model name and version, inference timestamp, input modalities used (audio / accel / gyro), recording-quality observations, recommended next action (e.g. "Repeat the recording", "Ask a qualified mechanic to inspect").
+- Mandatory disclaimer under every result: "AI-assisted screening result. Not a confirmed diagnosis."
+- If `model_not_configured`: show the "AI model not configured" state, still display visualizations and features if the backend can compute them.
+- Links to related inspection sessions.
+
+**Comparison**
+- Select 2 recordings (same vehicle recommended; warn if different vehicles or different sample rates) and show side-by-side waveforms, overlaid spectra, feature deltas and result history. Only compare compatible recordings.
+
+### 4. `/health-passport` — Vehicle Health Passport
+- Vehicle list and "Add vehicle" form: nickname (required), make, model, year, optional registration identifier (masked display, with a privacy note).
+- Vehicle detail with tabs: **Overview, Inspections, Recordings, Sensor sessions, Health trends, Maintenance, Reports, Sharing**.
+- Health trend charts from actual stored results only (e.g. abnormal-pattern probability over time, with model version annotations; mixing model versions is flagged on the chart).
+- Maintenance events: add/edit/delete (date, type, description, mileage optional, performed by, mechanic notes). Mechanic-confirmed diagnoses can be recorded as a separate entity with a name, date and linked session.
+- Search and filter: by vehicle, date range, result category, confirmed-vs-AI.
+- **PDF inspection report** (client-side generated): vehicle details, session ID, date and duration, inputs available, recording-quality observations, model output, model version, confidence/uncertainty, previous-session comparison (if available), recommended next action, and the screening-tool disclaimer. Never state a component is defective unless a mechanic-confirmed record supports it.
+- **Sharing:** the owner can share an individual report through a secure link: a random 32-byte token (stored hashed), optional expiry (1 day / 7 days / 30 days / never), a revoke button, optional "hide registration number" and "hide audio" toggles, and an access log (view count, last viewed). Public view `/shared/:token` shows only the shared report, read-only, with no navigation into the rest of the account.
+
+### 5. `/inspection/:id` — Session detail
+Metadata, vehicle link, processing status timeline (recorded → uploaded → validated → processed → AI result validated), audio player with waveform, sensor graphs, features, analysis results history, mechanic notes, "Export session ZIP", "Generate PDF", "Share report", "Delete session" (with confirm dialog).
+
+### 6. `/settings`
+Profile edit, theme (dark default / light optional), data export (JSON + files ZIP), delete account and data (confirm flow), shared-links manager, API keys/tokens for the Android app are **not** required (the Android app authenticates with the same Supabase login); show connected-device info if available. Privacy statement explaining what is stored and how it is processed.
+
+---
+
+## DATABASE (Supabase PostgreSQL) — write full migration SQL
+Use `uuid` primary keys (`gen_random_uuid()`), `created_at` / `updated_at` (timestamptz, trigger-maintained), and `user_id` ownership on all tables.
+
+Tables:
+- **profiles**(id = auth.users.id, display_name, avatar_url, created_at, updated_at)
+- **vehicles**(id, user_id, nickname, make, model, year, registration_identifier nullable, notes, created_at, updated_at, deleted_at nullable)
+- **inspection_sessions**(id, user_id, vehicle_id, client_session_id (unique per user, for idempotent Android uploads), started_at, ended_at, duration_seconds, source enum[`android`,`web_upload`], recording_config jsonb, sensor_availability jsonb, status enum[`created`,`uploading`,`uploaded`,`validated`,`processing`,`processed`,`failed`], notes)
+- **audio_recordings**(id, session_id, user_id, storage_path, sample_rate, channels, duration_seconds, size_bytes, sha256, input_device_info jsonb, created_at)
+- **sensor_recordings**(id, session_id, user_id, sensor_type enum[`accelerometer`,`gyroscope`], storage_path, sample_count, nominal_rate_hz, size_bytes, sha256, created_at)
+- **analysis_results**(id, session_id, user_id, status enum[`queued`,`running`,`completed`,`failed`,`unavailable`], result_category, confidence numeric nullable, uncertainty jsonb nullable, supported_classes jsonb, class_probabilities jsonb nullable, model_name, model_version, preprocessing_version, feature_summary jsonb, quality_observations jsonb, recommendation text, error_code, started_at, completed_at)
+- **mechanic_confirmations**(id, user_id, vehicle_id, session_id nullable, component, diagnosis_text, mechanic_name, confirmed_on, created_at)
+- **maintenance_events**(id, user_id, vehicle_id, event_date, event_type, description, mileage_km nullable, performed_by, mechanic_notes, created_at)
+- **shared_reports**(id, user_id, session_id, token_hash unique, expires_at nullable, revoked_at nullable, options jsonb, view_count, last_viewed_at, created_at)
+
+Add indexes on every foreign key, `(user_id, created_at desc)`, `(vehicle_id, started_at desc)`, `(user_id, client_session_id)` unique, `token_hash` unique.
+
+**Row Level Security:** enable RLS on every table. Policies: users can `select/insert/update/delete` only rows where `user_id = auth.uid()` (and for child tables, where the parent session/vehicle belongs to `auth.uid()`). `shared_reports` is accessible to the public **only through a `SECURITY DEFINER` function** `get_shared_report(token text)` that validates the hashed token, expiry and revocation, increments the view counter, and returns only the permitted fields. No direct anonymous select on any base table.
+
+**Storage:** private buckets `audio`, `sensor-data`, `reports`. Path convention `{user_id}/{vehicle_id}/{session_id}/<file>`. Storage policies restrict access to the owner's folder. Shared reports serve files via short-lived signed URLs created by the backend.
+
+---
+
+## API CONTRACT (FastAPI, prefix `/api/v1`, JSON, bearer JWT from Supabase)
+Server verifies the JWT (Supabase JWKS / JWT secret from env) on every request and **re-checks ownership** in code, in addition to RLS. Use the service role only inside the API, never in the frontend.
+
+| Method & path | Purpose |
+|---|---|
+| `POST /vehicles` | Create vehicle |
+| `GET /vehicles` | List own vehicles |
+| `GET /vehicles/{id}/health-history` | Chronological results for a vehicle |
+| `POST /sessions` | Create session (accepts `client_session_id` for idempotency; returns existing session if repeated) |
+| `GET /sessions` | List, with filters `vehicle_id`, `from`, `to`, `status`, `result_category`, pagination |
+| `GET /sessions/{id}` | Session with recordings and latest analysis |
+| `POST /sessions/{id}/audio` | Multipart WAV upload; supports `Idempotency-Key` and `X-Content-SHA256` |
+| `POST /sessions/{id}/sensor-data` | Multipart accelerometer/gyroscope CSV upload |
+| `POST /sessions/{id}/analyze` | Start analysis; returns `202` + `analysis_id` |
+| `GET /analysis/{analysis_id}` | Poll status/result |
+| `GET /health` | Liveness, plus whether a model is loaded (`model_loaded: bool`) |
+
+Document in `docs/API.md` with request/response JSON examples, error format and status codes. Standard error body:
+```json
+{ "error": { "code": "INVALID_AUDIO_FORMAT", "message": "Only 16-bit PCM WAV files are supported.", "request_id": "..." } }
+```
+Never return stack traces. Codes should include: `UNAUTHENTICATED`, `FORBIDDEN`, `NOT_FOUND`, `FILE_TOO_LARGE`, `INVALID_AUDIO_FORMAT`, `INVALID_SENSOR_CSV`, `DURATION_OUT_OF_RANGE`, `SESSION_MISMATCH`, `MODEL_NOT_CONFIGURED`, `ANALYSIS_FAILED`, `RATE_LIMITED`.
+
+Analysis response example when no model is configured:
+```json
+{
+  "analysis_id": "…", "status": "unavailable",
+  "result_category": "model_not_configured",
+  "message": "AI model not configured. Features and visualizations are available; no prediction was made.",
+  "model": null, "supported_classes": []
+}
+```
+Completed example includes: `result_category`, `confidence`, `uncertainty`, `model {name, version, trained_on, evaluated_on}`, `supported_classes`, `feature_summary`, `quality_observations`, `recommendation`, `timestamps`.
+
+**Reliability and security:** file-size limits (audio 50 MB, CSV 20 MB, configurable), magic-byte validation, filename sanitization, path-traversal protection, content-type checks, rate limiting, request timeouts, CORS restricted to configured origins, structured logging without sensitive data, retry-safe uploads (idempotency keys + SHA-256 verification + resumable "re-upload if hash mismatch" behavior), and consistent error handling.
+
+---
+
+## AI BACKEND (FastAPI service structure)
+Implement these services (real code, not stubs that fake output):
+1. **audio_validation**: header parse, PCM format check, duration/sample-rate/channel checks, silence and clipping detection, corrupted-file handling.
+2. **sensor_validation**: schema, numeric, monotonic timestamps, gap detection, estimated sampling rate.
+3. **alignment**: normalize timestamps to a common clock, resample sensors, handle missing data, align with the audio timeline.
+4. **windowing**: default 1 s window / 0.5 s hop (configurable). Document that overlapping windows from the same recording must never be split across train/test.
+5. **features**: audio (RMS, spectral centroid, bandwidth, roll-off, ZCR, MFCC) and sensor (mean, std, RMS, magnitude statistics, axis variability, gyroscope magnitude), with a versioned `preprocessing_version`.
+6. **inference**: loads a model artifact (e.g. `joblib` Random Forest) and `model_card.json` from a configurable path. If the artifact or card is missing → return `model_not_configured`. Use the **same preprocessing as training** (version-checked; refuse mismatch). Return class probabilities and an uncertainty indicator (e.g. entropy or probability margin). Mark a result `inconclusive` below a configurable confidence threshold. Normal-versus-abnormal classification first; enable fault-specific classes only when `model_card.json` lists them with evaluation metrics.
+7. **storage**: persist analysis results with model version and inference metadata.
+8. Provide `ml/training_notes.md` describing: data collection requirements, mechanic-verified labels, session/vehicle-level train/validation/test splits to prevent leakage, metrics (accuracy, precision, recall, F1, confusion matrix, per-class, false-positive/negative rates), and that accuracy must be measured, never assumed.
+
+Run analysis as a background task with status persisted to `analysis_results`.
+
+---
+
+## ANDROID INTEGRATION (write `docs/ANDROID_INTEGRATION.md`)
+- Authentication: the Android app signs in with Supabase Auth (email/password or OAuth), stores tokens in encrypted storage (EncryptedSharedPreferences / Keystore), and sends `Authorization: Bearer <jwt>` over HTTPS only.
+- Sync flow: create session with `client_session_id` → upload audio → upload accelerometer CSV → upload gyroscope CSV → optionally call analyze → website shows the same session after sync.
+- Upload `session.json` fields as the `POST /sessions` body (session ID, vehicle ID, timestamps, duration, sample rate, channel count, sensor availability, recording config).
+- Provide sample Kotlin guidance: Retrofit + OkHttp interface for the endpoints above, an auth interceptor, WorkManager `CoroutineWorker` for background retry-safe uploads with exponential backoff, SHA-256 header, multipart upload examples, and error mapping.
+- Privacy: vehicle data stays local on the phone unless the user explicitly enables sync (add a toggle requirement and describe it).
+- State clearly that this is **integration guidance**; the connection is not verified until tested end-to-end on a physical device.
+
+---
+
+## SECURITY CHECKLIST
+RLS on all tables; ownership re-validated server-side; no secrets in the client; private storage buckets with signed URLs; hashed share tokens; input validation with zod (frontend) and pydantic (backend); upload validation and size limits; CORS allow-list; security headers (CSP, X-Content-Type-Options, Referrer-Policy) in `vercel.json`; rate limiting; no stack traces in responses; account/data deletion flow; no logging of raw audio or tokens.
+
+---
+
+## ENVIRONMENT VARIABLES (`.env.example` files, placeholders only)
+`web/.env.example`
+```
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+VITE_API_BASE_URL=https://your-api.example.com/api/v1
+VITE_ENABLE_DEMO_DATA=false
+VITE_MAX_AUDIO_MB=50
+VITE_MAX_CSV_MB=20
+```
+`api/.env.example`
+```
+SUPABASE_URL=
+SUPABASE_JWKS_URL=
+SUPABASE_SERVICE_ROLE_KEY=      # server only, never in the frontend
+ALLOWED_ORIGINS=https://your-site.vercel.app
+MAX_AUDIO_MB=50
+MAX_CSV_MB=20
+MODEL_PATH=./app/ml/artifacts/model.joblib
+MODEL_CARD_PATH=./app/ml/artifacts/model_card.json
+CONFIDENCE_THRESHOLD=0.6
+```
+
+---
+
+## TESTS (must be included and runnable)
+- **Frontend (Vitest + React Testing Library):** protected-route redirect, login form validation, file-validation utilities (bad header, oversized, wrong extension, short duration), component status logic (status stays *Unknown* without validated evidence), empty states, "model not configured" rendering, share-link UI.
+- **Backend (pytest + httpx):** auth required on all routes, user A cannot access user B's session/vehicle/report (403/404), file-size and format rejection, CSV validation, idempotent session creation and upload, analyze returns `model_not_configured` when no artifact exists, error bodies contain no stack traces, shared-report token expiry/revocation.
+- **Database:** SQL tests or documented scripts verifying RLS blocks cross-user reads/writes.
+
+---
+
+## README (must include)
+Prerequisites; Supabase project setup; running migrations; storage buckets and policies; configuring auth; running the web app locally; running the FastAPI service locally (and with Docker); loading a trained model and `model_card.json`; running tests; deploying the web app to Vercel (including `vercel.json`) and the API to a container host; configuring CORS; connecting the Android app; **Known gaps / remaining integration work** (explicitly list: model training/validation status, Android end-to-end testing status, 3D model licensing, PDF styling).
+
+---
+
+## BUILD PROCESS (follow in order; stop after each stage and summarize)
+1. **Inspect** the generated project structure and confirm the plan. Preserve any existing unrelated files.
+2. **Stage 1 – Foundation:** Vite + TS + Tailwind setup, design tokens, layout, navigation, router, reusable UI components, login UI.
+3. **Stage 2 – Auth and data layer:** Supabase client, AuthGuard, migrations + RLS SQL, typed API client, TanStack Query hooks.
+4. **Stage 3 – Dashboard and Health Passport:** vehicles, sessions, maintenance, filters, charts, PDF reports, sharing.
+5. **Stage 4 – Digital Twin:** 3D scene, component selection, status logic, WebGL fallback.
+6. **Stage 5 – Diagnostic Lab:** uploads, validation, waveform/spectrum/spectrogram, sensor graphs, analysis flow, comparison.
+7. **Stage 6 – FastAPI backend:** all endpoints, validation, preprocessing, features, inference loader with the "unavailable" path, tests.
+8. **Stage 7 – Android integration docs and sample Kotlin client.**
+9. **Stage 8 – Tests, accessibility pass, responsive pass, security review, README, deployment config.**
+
+After each stage: list files created, state what was verified vs. not verified, and list remaining work. Do not claim anything works unless it was built and tested.
+
+---
+
+## ACCEPTANCE CHECKLIST (verify before declaring done)
+- [ ] No fabricated diagnostics, scores or trends anywhere; all demo content labelled "Sample data" and off by default
+- [ ] "AI model not configured" path works end to end
+- [ ] Component status remains Unknown without validated evidence
+- [ ] AI observations and mechanic-confirmed diagnoses are visually separate
+- [ ] RLS enabled on every table; cross-user access tests pass
+- [ ] No secrets in frontend code; `.env.example` files contain placeholders only
+- [ ] File validation (format, duration, sample rate, size) works on client and server
+- [ ] Responsive on mobile/tablet/desktop; WebGL fallback works
+- [ ] PDF report includes the disclaimer and model version
+- [ ] Share links expire, can be revoked, and expose only the chosen report
+- [ ] README lists known gaps honestly

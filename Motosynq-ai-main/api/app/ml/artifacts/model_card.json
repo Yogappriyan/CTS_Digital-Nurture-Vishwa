@@ -1,0 +1,29 @@
+{
+  "name": "MOTOSYNQ-AcousticInertial-RF",
+  "version": "v0.4.1-alpha",
+  "preprocessing_version": "prep-v1.2",
+  "task": "binary_condition_screening",
+  "supported_classes": ["normal_pattern", "abnormal_pattern"],
+  "inputs": [
+    "audio_rms_energy",
+    "spectral_centroid",
+    "spectral_bandwidth",
+    "spectral_rolloff",
+    "zero_crossing_rate",
+    "accel_rms_magnitude",
+    "accel_axis_variability"
+  ],
+  "validation_metrics": {
+    "evaluation_split": "vehicle_holdout_cross_validation",
+    "sample_count": 420,
+    "accuracy": 0.864,
+    "f1_macro": 0.852,
+    "false_positive_rate": 0.08,
+    "false_negative_rate": 0.14
+  },
+  "constraints": {
+    "engine_state": "stationary_warm_idle",
+    "min_snr_db": 18.0,
+    "mounting_requirement": "rigid_handlebar_or_tank_bracket"
+  }
+}

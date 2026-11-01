@@ -1,0 +1,144 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Common Hardened Security Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // 1. User Profiles
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['id', 'email', 'displayName']) &&
+             data.id is string && data.id == request.auth.uid &&
+             data.email is string && data.email.size() <= 120 &&
+             data.displayName is string && data.displayName.size() <= 100;
+    }
+
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // PII protection: no blanket user listing
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUserProfile(incoming());
+      allow update: if isOwner(userId) && isValidId(userId) && isValidUserProfile(incoming()) &&
+                       incoming().id == existing().id;
+      allow delete: if isOwner(userId);
+    }
+
+    // 2. Vehicles
+    function isValidVehicle(data) {
+      return data.keys().hasAll(['id', 'userId', 'nickname', 'make', 'model', 'year']) &&
+             data.userId == request.auth.uid &&
+             data.id is string && data.id.size() <= 128 &&
+             data.nickname is string && data.nickname.size() <= 80 &&
+             data.make is string && data.make.size() <= 50 &&
+             data.model is string && data.model.size() <= 50 &&
+             data.year is number && data.year >= 1900 && data.year <= 2100;
+    }
+
+    match /vehicles/{vehicleId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(vehicleId) && isValidVehicle(incoming());
+      allow update: if isSignedIn() && isValidId(vehicleId) && existing().userId == request.auth.uid &&
+                       isValidVehicle(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    // 3. Inspection Sessions
+    function isValidSession(data) {
+      return data.keys().hasAll(['id', 'userId', 'vehicleId', 'startedAt', 'durationSeconds', 'source', 'status']) &&
+             data.userId == request.auth.uid &&
+             data.id is string && data.id.size() <= 128 &&
+             data.vehicleId is string && data.vehicleId.size() <= 128 &&
+             data.durationSeconds is number && data.durationSeconds >= 3.0 && data.durationSeconds <= 300.0 &&
+             data.source in ['android', 'web_upload'] &&
+             data.status in ['created', 'uploading', 'uploaded', 'validated', 'processing', 'processed', 'failed'];
+    }
+
+    match /sessions/{sessionId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(sessionId) && isValidSession(incoming());
+      allow update: if isSignedIn() && isValidId(sessionId) && existing().userId == request.auth.uid &&
+                       isValidSession(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    // 4. Maintenance Events
+    function isValidMaintenance(data) {
+      return data.keys().hasAll(['id', 'userId', 'vehicleId', 'eventDate', 'eventType', 'description']) &&
+             data.userId == request.auth.uid &&
+             data.id is string && data.id.size() <= 128 &&
+             data.vehicleId is string && data.vehicleId.size() <= 128 &&
+             data.description is string && data.description.size() <= 500;
+    }
+
+    match /maintenance/{maintenanceId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(maintenanceId) && isValidMaintenance(incoming());
+      allow update: if isSignedIn() && isValidId(maintenanceId) && existing().userId == request.auth.uid &&
+                       isValidMaintenance(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    // 5. Mechanic Confirmations
+    function isValidMechanicConfirmation(data) {
+      return data.keys().hasAll(['id', 'userId', 'vehicleId', 'component', 'diagnosisText', 'mechanicName', 'confirmedOn']) &&
+             data.userId == request.auth.uid &&
+             data.id is string && data.id.size() <= 128 &&
+             data.component is string && data.component.size() <= 50 &&
+             data.diagnosisText is string && data.diagnosisText.size() <= 1000 &&
+             data.mechanicName is string && data.mechanicName.size() <= 100;
+    }
+
+    match /mechanic_confirmations/{confirmationId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(confirmationId) && isValidMechanicConfirmation(incoming());
+      allow update: if isSignedIn() && isValidId(confirmationId) && existing().userId == request.auth.uid &&
+                       isValidMechanicConfirmation(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+
+    // 6. Shared Reports (Token-gated)
+    function isValidSharedReport(data) {
+      return data.keys().hasAll(['id', 'userId', 'sessionId', 'tokenHash']) &&
+             data.id is string && data.id.size() <= 128 &&
+             data.tokenHash is string && data.tokenHash.size() <= 128;
+    }
+
+    match /shared_reports/{reportId} {
+      // Owner can read and manage
+      allow read: if (isSignedIn() && existing().userId == request.auth.uid) ||
+                     // Public token read allowed if not revoked
+                     (existing().revokedAt == null);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(reportId) && incoming().userId == request.auth.uid && isValidSharedReport(incoming());
+      allow update: if isSignedIn() && isValidId(reportId) && existing().userId == request.auth.uid &&
+                       incoming().userId == existing().userId && isValidSharedReport(incoming());
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "MOTOSYNQ AI",
+  "description": "Intelligent Motorcycle Condition Monitoring Through Multimodal Sensor Fusion — Companion Website and Screening Dashboard",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

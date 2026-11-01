@@ -1,0 +1,307 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account profile document storing rider preferences and display metadata.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User authenticated email address."
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Rider display name or handle."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account creation timestamp."
+        }
+      },
+      "required": ["id", "email", "displayName"]
+    },
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "Registered motorcycle profile for multimodal acoustic and inertial inspections.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique vehicle identifier."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID."
+        },
+        "nickname": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Motorcycle call-sign or nickname."
+        },
+        "make": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Manufacturer (e.g., Royal Enfield, Yamaha)."
+        },
+        "model": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Model designation (e.g., Interceptor 650)."
+        },
+        "year": {
+          "type": "number",
+          "description": "Model manufacturing year."
+        },
+        "registrationIdentifier": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Masked registration number."
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Mounting position notes."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of profile creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of profile update."
+        }
+      },
+      "required": ["id", "userId", "nickname", "make", "model", "year"]
+    },
+    "InspectionSession": {
+      "title": "InspectionSession",
+      "description": "Synchronized acoustic and motion inspection session recorded during stationary engine operation.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique session identifier."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID."
+        },
+        "vehicleId": {
+          "type": "string",
+          "description": "Associated motorcycle profile ID."
+        },
+        "clientSessionId": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Client-generated UUID for idempotent uploads."
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Recording start timestamp."
+        },
+        "endedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Recording end timestamp."
+        },
+        "durationSeconds": {
+          "type": "number",
+          "description": "Inspection duration in seconds (3 to 300 seconds)."
+        },
+        "source": {
+          "type": "string",
+          "enum": ["android", "web_upload"],
+          "description": "Recording source platform."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["created", "uploading", "uploaded", "validated", "processing", "processed", "failed"],
+          "description": "Ingestion and screening processing state."
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Session conditions and observations."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp record was created."
+        }
+      },
+      "required": ["id", "userId", "vehicleId", "startedAt", "durationSeconds", "source", "status"]
+    },
+    "MaintenanceEvent": {
+      "title": "MaintenanceEvent",
+      "description": "Workshop or DIY maintenance log for tracked motorcycle.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique maintenance event identifier."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID."
+        },
+        "vehicleId": {
+          "type": "string",
+          "description": "Associated motorcycle ID."
+        },
+        "eventDate": {
+          "type": "string",
+          "description": "Date of service."
+        },
+        "eventType": {
+          "type": "string",
+          "description": "Classification of maintenance event."
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Work performed description."
+        },
+        "mileageKm": {
+          "type": "number",
+          "description": "Odometer reading in kilometers."
+        },
+        "performedBy": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Technician or rider name."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp."
+        }
+      },
+      "required": ["id", "userId", "vehicleId", "eventDate", "eventType", "description"]
+    },
+    "MechanicConfirmation": {
+      "title": "MechanicConfirmation",
+      "description": "Certified workshop physical diagnosis confirming component status.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Confirmation identifier."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID."
+        },
+        "vehicleId": {
+          "type": "string",
+          "description": "Associated motorcycle ID."
+        },
+        "component": {
+          "type": "string",
+          "description": "Inspected motorcycle component."
+        },
+        "diagnosisText": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Mechanic diagnosis findings."
+        },
+        "mechanicName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Name of certified technician."
+        },
+        "workshopName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Name of workshop or service center."
+        },
+        "confirmedOn": {
+          "type": "string",
+          "description": "Date of confirmed diagnosis."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp."
+        }
+      },
+      "required": ["id", "userId", "vehicleId", "component", "diagnosisText", "mechanicName", "confirmedOn"]
+    },
+    "SharedReport": {
+      "title": "SharedReport",
+      "description": "Token-gated screening report sharing token.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Shared report identifier."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID."
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "Linked inspection session ID."
+        },
+        "tokenHash": {
+          "type": "string",
+          "description": "SHA-256 token hash."
+        },
+        "expiresAt": {
+          "type": "string",
+          "description": "Token expiry timestamp."
+        },
+        "revokedAt": {
+          "type": "string",
+          "description": "Revocation timestamp if cancelled."
+        },
+        "viewCount": {
+          "type": "number",
+          "description": "Access view count."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp."
+        }
+      },
+      "required": ["id", "userId", "sessionId", "tokenHash"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Rider user profile documents."
+    },
+    "/vehicles/{vehicleId}": {
+      "schema": "Vehicle",
+      "description": "Motorcycle digital twin profiles."
+    },
+    "/sessions/{sessionId}": {
+      "schema": "InspectionSession",
+      "description": "Multimodal inspection session recordings."
+    },
+    "/maintenance/{maintenanceId}": {
+      "schema": "MaintenanceEvent",
+      "description": "Motorcycle maintenance logs."
+    },
+    "/mechanic_confirmations/{confirmationId}": {
+      "schema": "MechanicConfirmation",
+      "description": "Certified technician physical diagnosis entries."
+    },
+    "/shared_reports/{reportId}": {
+      "schema": "SharedReport",
+      "description": "Token-gated shared inspection screening reports."
+    }
+  }
+}
